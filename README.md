@@ -43,3 +43,50 @@ networks:
     driver: bridge
 
 ```
+
+
+
+* **Firewall** : point d'entrée unique de la chaîne de services. Il analyse le trafic entrant pour bloquer les requêtes malveillantes avant qu'elles n'atteignent l'infrastructure interne.
+* **Load Balancer** : agit comme un orchestrateur. Distribue le trafic réseau entre plusieurs serveurs finaux pour éviter la saturation d'un seul point.
+* **Web Server** :  Il héberge l'application.
+
+### 4.1 Modélisation TOSCA
+
+**Fichier `service-chain.yaml` :**
+
+```yaml
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+node_types:
+  vnf_node:
+    derived_from: tosca.nodes.Root
+
+topology_template:
+  node_templates:
+    firewall:
+      type: vnf_node
+      interfaces:
+        Standard:
+          operations:
+            create: playbooks/deploy_firewall.yaml
+
+    loadbalancer:
+      type: vnf_node
+      requirements:
+        - dependency: firewall
+      interfaces:
+        Standard:
+          operations:
+            create: playbooks/deploy_loadbalancer.yaml
+
+    webserver:
+      type: vnf_node
+      requirements:
+        - dependency: loadbalancer
+      interfaces:
+        Standard:
+          operations:
+            create: playbooks/deploy_webserver.yaml
+```
+
+Le modèle TOSCA structure notre chaîne de services. L’orchestrateur xOpera construit un Graphe Dirigé Acyclique pour ordonnancer le déploiement. Il interprète ces liens comme des contraintes de séquençage strictes, interdisant le lancement simultané des VNFs.
