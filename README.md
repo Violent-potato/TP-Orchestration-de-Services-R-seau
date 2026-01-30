@@ -50,7 +50,9 @@ networks:
 * **Load Balancer** : agit comme un orchestrateur. Distribue le trafic réseau entre plusieurs serveurs finaux pour éviter la saturation d'un seul point.
 * **Web Server** :  Il héberge l'application.
 
-### 4.1 Modélisation TOSCA
+![Capture d'écran du TP](screenshots/conteneurs-en-execution.png)
+
+### 4.2 Modélisation TOSCA
 
 **Fichier `service-chain.yaml` :**
 
