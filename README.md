@@ -90,3 +90,33 @@ topology_template:
 ```
 
 Le modèle TOSCA structure notre chaîne de services. L’orchestrateur xOpera construit un Graphe Dirigé Acyclique pour ordonnancer le déploiement. Il interprète ces liens comme des contraintes de séquençage strictes, interdisant le lancement simultané des VNFs.
+
+
+### 4.3 Orchestration avec xOpera
+
+### 4.4 Workflow BPMN (Camunda) 
+
+* **Deploy Firewall:** déclenche l'instanciation de la fonction de sécurité. Elle assure que le périmètre est défini avant l'exposition des autres services.
+* **Deploy Load Balancer:** configure le répartiteur de charge pour préparer l'aiguillage du trafic vers les backends.
+* **Deploy Web Server:** déploie l'application finale
+* **Test Network Flow:** valide que la chaîne est traversante et que le service est rendu à l'utilisateur final.
+
+Il ne manipule pas directement les conteneurs. Le lien s'effectue via des connecteurs ou des agents qui appellent les scripts Ansible. Le moteur attend un code de retour de ces scripts pour décider de la suite du workflow
+
+### 4.5 Vérification du flux réseau 
+
+* **curl http://localhost:8080:** L'orchestrateur a lancé la commande, mais le service n'a pas survécu à son initialisation.
+* **curl http://localhost:9090 :** Le conteneur HAProxy est fonctionnel. Cependant, comme il est configuré pour rediriger le flux vers le firewall qui est hors-ligne, il renvoie une erreur.
+* **curl http://localhost:8081**
+* **log des conteneurs**
+
+
+## 6. Analyse et discussion 
+**Quelle est la différence entre orchestration TOSCA et workflow BPMN ?**
+TOSCA est une approche déclarative. On décrit l'état final souhaité, l'orchestrateur déduit l'ordre technique des opérations. BPMN est une approche impérative et procédurale à l’inverse.
+
+**Pourquoi séparer la logique de déploiement (xOpera) de la logique métier (Camunda) ?**
+Par prnicipe de découplage. xOpera s'occupe de l'infrastructure, tandis que Camunda s'occupe de la logique métier. Cela permet de changer d'infrastructure sans modifier le processus métier global.
+
+**Quels sont les avantages et limites de cette approche ?**
+Permet de changer d'infrastructure sans modifier le processus métier global.Néanmoins cela engendre un surplus de consommation de ressources, plusieurs orchestrateurs tournent en parallèle.
