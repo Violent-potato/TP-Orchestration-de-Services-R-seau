@@ -96,6 +96,13 @@ Le modèle TOSCA structure notre chaîne de services. L’orchestrateur xOpera c
 
 ### 4.3 Orchestration avec xOpera
 
+![Capture d'écran du TP](screenshots/logs.png)
+
+![Capture d'écran du TP](screenshots/docker-ps.png)
+
+![Capture d'écran du TP](screenshots/nettoyage.png)
+
+
 ### 4.4 Workflow BPMN (Camunda) 
 
 * **Deploy Firewall:** déclenche l'instanciation de la fonction de sécurité. Elle assure que le périmètre est défini avant l'exposition des autres services.
@@ -110,7 +117,11 @@ Il ne manipule pas directement les conteneurs. Le lien s'effectue via des connec
 * **curl http://localhost:8080:** L'orchestrateur a lancé la commande, mais le service n'a pas survécu à son initialisation.
 * **curl http://localhost:9090 :** Le conteneur HAProxy est fonctionnel. Cependant, comme il est configuré pour rediriger le flux vers le firewall qui est hors-ligne, il renvoie une erreur.
 * **curl http://localhost:8081**
+  ![Capture d'écran du TP](screenshots/curl8081.png)
+
 * **log des conteneurs**
+  ![Capture d'écran du TP](screenshots/logs2.png)
+
 
 
 ## 6. Analyse et discussion 
