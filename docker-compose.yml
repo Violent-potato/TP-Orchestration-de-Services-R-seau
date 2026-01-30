@@ -1,0 +1,35 @@
+services:
+  firewall:
+    image: wallarm/api-firewall
+    container_name: vnf-firewall
+    environment:
+      - AFW_SERVER_LISTEN=8080
+      - AFW_SERVER_ENDPOINT=http://vnf-lb:80
+      - AFW_REQUEST_VALIDATION=false
+      - AFW_SERVER_REPORT_ONLY=true
+    ports:
+      - "8080:8080"
+    networks:
+      - net-chain
+
+  loadbalancer:
+    image: haproxytech/haproxy-alpine
+    container_name: vnf-lb
+    ports:
+      - "9090:80"
+    networks:
+      - net-chain
+
+  webserver:
+    image: nginx:alpine
+    container_name: vnf-web
+    ports:
+      - "8081:80"
+    networks:
+      - net-chain
+
+networks:
+  net-chain:
+    driver: bridge
+
+
